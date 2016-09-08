@@ -1,5 +1,8 @@
 -module(jwerl).
 
+%% No erlang:now/0 warnings, we check for OTP R18 at runtime
+-compile(nowarn_deprecated_function).
+
 -export([sign/1, sign/2,
          verify/1, verify/2]).
 
@@ -31,7 +34,7 @@ verify(Data, Options) ->
   end.
 
 check_claims(TokenData) ->
-  Now = os:system_time(seconds),
+  Now = get_system_time(),
   check_claim(TokenData, exp, fun(ExpireTime) ->
                     Now < ExpireTime
                 end, expired),
@@ -161,3 +164,13 @@ algorithm_to_infos(Algo) ->
     _ ->
       exit(invalid_algorithme)
   end.
+
+get_system_time() ->
+    Release = list_to_integer(erlang:system_info(otp_release)),
+    if
+        Release < 18 ->
+            {MS, S, US} = erlang:now(),
+            (MS * 1000000 + S) * 1000000 + US;
+        true ->
+            os:system_time(seconds)
+    end.
