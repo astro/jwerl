@@ -72,7 +72,7 @@ t_jwerl_ecdsa() ->
                              #{alg => <<"ES512">>, key => ec_public_key()})).
 
 t_jwerl_no_claims() ->
-  Now = os:system_time(seconds),
+  Now = jwerl:get_system_time(),
   %% All three claim timestamps are invalid but check_claims => false
   Data1 = #{key => <<"value">>, exp => Now, nbf => Now + 10, iat => Now + 10},
   ?assertMatch({ok, Data1}, jwerl:verify(
@@ -85,7 +85,7 @@ t_jwerl_no_claims() ->
                               #{alg => none, check_claims => true})).
 
 t_jwerl_claims() ->
-  Now = os:system_time(seconds),
+  Now = jwerl:get_system_time(),
   %% All ok
   Data1 = #{key => <<"value">>, exp => Now + 10, nbf => Now, iat => Now},
   ?assertMatch({ok, Data1}, jwerl:verify(

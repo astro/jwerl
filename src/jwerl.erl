@@ -6,6 +6,9 @@
 -export([sign/1, sign/2,
          verify/1, verify/2]).
 
+%% Used by tests
+-export([get_system_time/0]).
+
 -define(DEFAULT_ALG, <<"HS256">>).
 -define(DEFAULT_HEADER, #{typ => <<"JWT">>,
                           alg => ?DEFAULT_ALG}).
